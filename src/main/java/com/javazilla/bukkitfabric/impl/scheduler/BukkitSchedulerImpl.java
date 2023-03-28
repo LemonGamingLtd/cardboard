@@ -359,7 +359,7 @@ public class BukkitSchedulerImpl implements BukkitScheduler {
                 try {
                     task.run();
                 } catch (final Throwable throwable) {
-                    task.getOwner().getLogger().log(Level.WARNING, "Task #" + task.getTaskId() + " for " + task.getOwner().getDescription().getFullName() + "generated an exception", throwable);
+                    task.getOwner().getLogger().log(Level.WARNING, "Task #" + task.getTaskId() + " for " + task.getOwner().getDescription().getFullName() + " generated an exception", throwable);
                 } finally {currentTask = null; }
                 parsePending();
             } else task.getOwner().getLogger().log(Level.SEVERE, "Unexpected Async Task in the Sync Scheduler. Report this to Paper");
