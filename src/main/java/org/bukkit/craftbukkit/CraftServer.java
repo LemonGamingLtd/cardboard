@@ -1879,7 +1879,8 @@ public class CraftServer implements Server {
 
     @Override
     public double[] getTPS() {
-        return new double[] {server.tickTime};
+        // paper will return 1m, 5m, 15m tps averages, we send the same tick time 3 times to at least be compatible with plugins that expect this
+        return new double[] {server.tickTime, server.tickTime, server.tickTime};
     }
 
     @Override
