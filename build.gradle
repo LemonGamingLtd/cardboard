@@ -72,7 +72,14 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
     extraLibs fileTree(dir: 'libs', include: 'commons-lang-2.6.jar')
-    extraLibs fileTree(dir: 'libs', include: 'adventure.jar')
+
+    extraLibs("net.kyori:adventure-api:4.11.0")
+    extraLibs("net.kyori:adventure-text-minimessage:4.11.0")
+    extraLibs("net.kyori:adventure-text-serializer-gson:4.11.0")
+    extraLibs("net.kyori:adventure-text-serializer-legacy:4.11.0")
+    extraLibs("net.kyori:adventure-text-serializer-plain:4.11.0")
+    extraLibs("net.kyori:adventure-text-logger-slf4j:4.11.0")
+
     //extraLibs group: "org.jetbrains", name: "annotations", version: "20.1.0"
     extraLibs group: "com.googlecode.json-simple", name: "json-simple", version: "1.1.1"
 
