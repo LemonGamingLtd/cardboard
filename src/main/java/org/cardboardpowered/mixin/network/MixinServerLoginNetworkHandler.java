@@ -1,5 +1,6 @@
 package org.cardboardpowered.mixin.network;
 
+import com.mojang.logging.LogUtils;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -65,7 +66,10 @@ public class MixinServerLoginNetworkHandler implements IMixinServerLoginNetworkH
     // TODO 1.17ify: @Shadow private SecretKey secretKey;
     @Shadow public ServerPlayerEntity delayedPlayer;
 
-    private Logger LOGGER_BF = LogManager.getLogger("Bukkit|ServerLoginNetworkHandler");
+    @Shadow static org.slf4j.Logger LOGGER;
+    private static final java.util.concurrent.ExecutorService authenticatorPool = java.util.concurrent.Executors.newCachedThreadPool(new com.google.common.util.concurrent.ThreadFactoryBuilder().setNameFormat("User Authenticator #%d").setUncaughtExceptionHandler(new net.minecraft.util.logging.UncaughtExceptionHandler(LOGGER)).build());
+
+    private static Logger LOGGER_BF = LogManager.getLogger("Bukkit|ServerLoginNetworkHandler");
     public String hostname = ""; // Bukkit - add field
     private long theid = 0;
     
@@ -116,8 +120,9 @@ public class MixinServerLoginNetworkHandler implements IMixinServerLoginNetworkH
             throw new IllegalStateException("Protocol error", networkEncryptionException);
         }
         final String s = id;
-        Thread thread = new Thread("User Authenticator #" + theid++) {
-            @Override
+        // Paper start - Cache authenticator threads
+        System.out.println("1Authenticating " + this.profile.getName() + " with id " + s);
+        authenticatorPool.execute(new Runnable() {
             public void run() {
                 GameProfile gameprofile = profile;
 
@@ -156,9 +161,8 @@ public class MixinServerLoginNetworkHandler implements IMixinServerLoginNetworkH
                 SocketAddress socketaddress = connection.getAddress();
                 return server.shouldPreventProxyConnections() && socketaddress instanceof InetSocketAddress ? ((InetSocketAddress) socketaddress).getAddress() : null;
             }
-        };
-        // TODO: thread.setUncaughtExceptionHandler(new UncaughtExceptionLogger(LogManager.getLogger("BukkitServerLoginManager")));
-        thread.start();
+        });
+        // Paper end
     }
 
     public void fireEvents() throws Exception {
@@ -271,8 +275,8 @@ public class MixinServerLoginNetworkHandler implements IMixinServerLoginNetworkH
     @Inject(at = @At("TAIL"), method="onHello")
     public void spigotHello(LoginHelloC2SPacket packetlogininstart, CallbackInfo ci) {
         if (!(this.server.isOnlineMode() && !this.connection.isLocal())) {
-            // Spigot start
-            new Thread("User Authenticator #" + theid++) {
+            // Paper start - Cache authenticator threads
+            authenticatorPool.execute(new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -283,8 +287,8 @@ public class MixinServerLoginNetworkHandler implements IMixinServerLoginNetworkH
                         CraftServer.INSTANCE.getLogger().log(java.util.logging.Level.WARNING, "Exception verifying " + profile.getName(), ex);
                     }
                 }
-            }.start();
-            // Spigot end
+            });
+            // Paper end
         }
     }
 
