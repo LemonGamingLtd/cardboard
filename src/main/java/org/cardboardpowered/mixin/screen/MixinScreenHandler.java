@@ -83,7 +83,7 @@ public abstract class MixinScreenHandler implements IMixinScreenHandler {
     @Override
     public final Text getTitle() {
         if (null == this.title_cb)
-            this.title_cb = Text.of(" nul ");
+            this.title_cb = Text.of("Unknown Window Title");
         return this.title_cb;
     }
 

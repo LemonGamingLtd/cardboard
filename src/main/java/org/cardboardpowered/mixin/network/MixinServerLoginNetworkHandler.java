@@ -238,12 +238,17 @@ public class MixinServerLoginNetworkHandler implements IMixinServerLoginNetworkH
         } catch (PlayerPublicKey.PublicKeyException publicKeyException) {
             // LOGGER.error("Failed to validate profile key: {}", (Object)publicKeyException.getMessage());
             this.disconnect(publicKeyException.getMessageText());
-            return null;
+            // return an empty text component to signal that the player was not allowed to join
+            return Text.empty();
         }
     	
     	ServerPlayerEntity s = pm.attemptLogin((ServerLoginNetworkHandler)(Object)this, this.profile, playerPublicKey, hostname);
-        
         cardboard_player = s;
+
+        if (s == null) {
+            // return an empty text component to signal that the player was not allowed to join
+            return Text.empty();
+        }
 
         return null;
     }

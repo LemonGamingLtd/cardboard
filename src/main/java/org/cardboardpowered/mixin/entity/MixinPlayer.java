@@ -190,13 +190,18 @@ public class MixinPlayer extends MixinLivingEntity implements IMixinCommandOutpu
      */
     @Inject(at = @At("HEAD"), method = "openHandledScreen", cancellable = true)
     public void openHandledScreen_c(NamedScreenHandlerFactory factory, CallbackInfoReturnable<OptionalInt> ci) {
+        System.out.println("openHandledScreen_c " + factory);
+
         if (factory == null) {
             ci.setReturnValue(OptionalInt.empty());
         } else {
+            System.out.println("start counter ");
             this.nextContainerCounter();
             ScreenHandler container = factory.createMenu(this.screenHandlerSyncId, ((ServerPlayerEntity)(Object)this).inventory, ((ServerPlayerEntity)(Object)this));
 
+            System.out.println("container is  " + container);
             if (container != null) {
+                System.out.println("setting title to " + factory.getDisplayName());
                 ((IMixinScreenHandler)container).setTitle(factory.getDisplayName());
 
                 boolean cancelled = false;
