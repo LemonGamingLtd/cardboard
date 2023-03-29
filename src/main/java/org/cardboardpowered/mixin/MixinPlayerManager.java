@@ -272,4 +272,8 @@ public class MixinPlayerManager implements IMixinPlayerManager {
         sendScoreboard(newboard, handle);
     }
 
+    public List<ServerPlayerEntity> getPlayers() {
+    	return this.players;
+    }
+
 }

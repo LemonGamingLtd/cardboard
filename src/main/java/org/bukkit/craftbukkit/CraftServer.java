@@ -18,6 +18,7 @@
  */
 package org.bukkit.craftbukkit;
 
+import com.javazilla.bukkitfabric.interfaces.IMixinPlayerManager;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FilenameFilter;
@@ -168,6 +169,7 @@ import org.cardboardpowered.impl.util.IconCacheImpl;
 import org.cardboardpowered.impl.util.SimpleHelpMap;
 import org.cardboardpowered.impl.world.ChunkDataImpl;
 import org.cardboardpowered.impl.world.WorldImpl;
+import org.cardboardpowered.mixin.entity.MixinPlayer;
 import org.checkerframework.checker.nullness.qual.NonNull;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -324,7 +326,15 @@ public class CraftServer implements Server {
         configuration.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("configurations/bukkit.yml"), Charsets.UTF_8)));
         saveConfig();
 
-        this.playerView = new ArrayList<>();
+        List<ServerPlayerEntity> players = ((IMixinPlayerManager) server.getPlayerManager()).getPlayers();
+
+        this.playerView = Collections.unmodifiableList(Lists.transform(players, new Function<ServerPlayerEntity, PlayerImpl>() {
+            @Override
+            public PlayerImpl apply(ServerPlayerEntity player) {
+                return (PlayerImpl) ((IMixinServerEntityPlayer) player).getBukkitEntity();
+            }
+        }));
+
         loadIcon();
     }
  

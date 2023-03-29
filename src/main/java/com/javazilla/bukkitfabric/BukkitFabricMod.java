@@ -289,7 +289,6 @@ public class BukkitFabricMod implements ModInitializer {
             ie.getBukkit().setHandle(e);
         } else {
             ie.setBukkit( new PlayerImpl(e) );
-            CraftServer.INSTANCE.playerView.add(ie.getBukkit());
         }
     }
 

@@ -18,6 +18,7 @@
  */
 package com.javazilla.bukkitfabric.interfaces;
 
+import java.util.List;
 import org.bukkit.Location;
 
 import com.mojang.authlib.GameProfile;
@@ -35,5 +36,7 @@ public interface IMixinPlayerManager {
     ServerPlayerEntity attemptLogin(ServerLoginNetworkHandler loginlistener, GameProfile gameprofile, PlayerPublicKey profilepublickey, String hostname);
 
     void sendScoreboardBF(ServerScoreboard newboard, ServerPlayerEntity handle);
+
+    List<ServerPlayerEntity> getPlayers();
 
 }

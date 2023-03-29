@@ -125,11 +125,6 @@ public class MixinPlayer extends MixinLivingEntity implements IMixinCommandOutpu
         return ((ServerWorld)world).getSpawnPos();
     }
 
-    @Inject(at = @At("TAIL"), method = "onDisconnect")
-    public void onDisconnect(CallbackInfo ci) {
-        CraftServer.INSTANCE.playerView.remove(this.bukkit);
-    }
-
     @Inject(at = @At("HEAD"), method = "teleport", cancellable = true)
     public void teleport1(ServerWorld worldserver, double x, double y, double z, float f, float f1, CallbackInfo ci) {
         PlayerTeleportEvent event = new PlayerTeleportEvent((Player) this.getBukkitEntity(), this.getBukkitEntity().getLocation(), new Location(((IMixinWorld)worldserver).getWorldImpl(), x,y,z,f,f1), PlayerTeleportEvent.TeleportCause.UNKNOWN);
