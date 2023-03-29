@@ -1144,9 +1144,12 @@ public class CraftServer implements Server {
 
     @Override
     public Collection<? extends Player> getOnlinePlayers() {
-        return server.getPlayerManager().players.stream()
-                .map(player -> (PlayerImpl) ((IMixinServerEntityPlayer) player).getBukkitEntity())
-                .toList();
+        return Collections.unmodifiableList(Lists.transform(server.getPlayerManager().players, new Function<ServerPlayerEntity, PlayerImpl>() {
+            @Override
+            public PlayerImpl apply(ServerPlayerEntity player) {
+                return (PlayerImpl) ((IMixinServerEntityPlayer) player).getBukkitEntity();
+            }
+        }));
     }
 
     @Override
