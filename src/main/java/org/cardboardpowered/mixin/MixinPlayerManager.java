@@ -142,14 +142,18 @@ public class MixinPlayerManager implements IMixinPlayerManager {
 
             location = respawnEvent.getRespawnLocation();
         } else location.setWorld(((IMixinWorld)worldserver).getWorldImpl());
-        ServerWorld worldserver1 = ((WorldImpl) location.getWorld()).getHandle();
-        ServerWorld fromWorld = player.getWorld();
-        player.teleport(worldserver1, location.getX(), location.getY(), location.getZ(), 0, 0);
 
-        if (fromWorld != location.getWorld()) {
-            PlayerChangedWorldEvent event = new PlayerChangedWorldEvent((Player) ((IMixinServerEntityPlayer)player).getBukkitEntity(), ((IMixinWorld)fromWorld).getWorldImpl());
+        ServerWorld fromWorld = player.getWorld();
+        ServerWorld toWorld = ((WorldImpl) location.getWorld()).getHandle();
+        player.teleport(toWorld, location.getX(), location.getY(), location.getZ(), 0, 0);
+
+        org.bukkit.World fromWorldBukkit = ((IMixinWorld) fromWorld).getWorldImpl();
+        org.bukkit.World toWorldBukkit = ((IMixinWorld) toWorld).getWorldImpl();
+        if (!fromWorldBukkit.equals(toWorldBukkit)) {
+            PlayerChangedWorldEvent event = new PlayerChangedWorldEvent((Player) ((IMixinServerEntityPlayer)player).getBukkitEntity(), fromWorldBukkit);
             CraftServer.INSTANCE.getPluginManager().callEvent(event);
         }
+
         return player;
     }
 
