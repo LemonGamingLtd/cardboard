@@ -1,6 +1,13 @@
 package org.cardboardpowered.mixin.network;
 
-import com.mojang.logging.LogUtils;
+import com.javazilla.bukkitfabric.BukkitFabricMod;
+import com.javazilla.bukkitfabric.interfaces.IMixinClientConnection;
+import com.javazilla.bukkitfabric.interfaces.IMixinMinecraftServer;
+import com.javazilla.bukkitfabric.interfaces.IMixinPlayerManager;
+import com.javazilla.bukkitfabric.interfaces.IMixinServerLoginNetworkHandler;
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
+import io.netty.channel.local.LocalAddress;
 import java.math.BigInteger;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
@@ -8,10 +15,24 @@ import java.net.SocketAddress;
 import java.security.PrivateKey;
 import java.time.Duration;
 import java.util.UUID;
-
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
-
+import net.fabricmc.loader.api.FabricLoader;
+import net.minecraft.network.ClientConnection;
+import net.minecraft.network.encryption.NetworkEncryptionException;
+import net.minecraft.network.encryption.NetworkEncryptionUtils;
+import net.minecraft.network.encryption.PlayerPublicKey;
+import net.minecraft.network.encryption.SignatureVerifier;
+import net.minecraft.network.packet.c2s.login.LoginHelloC2SPacket;
+import net.minecraft.network.packet.c2s.login.LoginKeyC2SPacket;
+import net.minecraft.network.packet.s2c.login.LoginDisconnectS2CPacket;
+import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.PlayerManager;
+import net.minecraft.server.network.ServerLoginNetworkHandler;
+import net.minecraft.server.network.ServerLoginNetworkHandler.State;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.util.dynamic.DynamicSerializableUuid;
 import org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
@@ -28,31 +49,6 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
-
-import com.javazilla.bukkitfabric.BukkitFabricMod;
-import com.javazilla.bukkitfabric.interfaces.IMixinClientConnection;
-import com.javazilla.bukkitfabric.interfaces.IMixinMinecraftServer;
-import com.javazilla.bukkitfabric.interfaces.IMixinPlayerManager;
-import com.javazilla.bukkitfabric.interfaces.IMixinServerLoginNetworkHandler;
-import com.mojang.authlib.GameProfile;
-import com.mojang.authlib.exceptions.AuthenticationUnavailableException;
-
-import io.netty.channel.local.LocalAddress;
-import net.minecraft.network.ClientConnection;
-import net.minecraft.network.encryption.NetworkEncryptionException;
-import net.minecraft.network.encryption.NetworkEncryptionUtils;
-import net.minecraft.network.encryption.PlayerPublicKey;
-import net.minecraft.network.encryption.SignatureVerifier;
-import net.minecraft.network.packet.c2s.login.LoginHelloC2SPacket;
-import net.minecraft.network.packet.c2s.login.LoginKeyC2SPacket;
-import net.minecraft.network.packet.s2c.login.LoginDisconnectS2CPacket;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.PlayerManager;
-import net.minecraft.server.network.ServerLoginNetworkHandler;
-import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.server.network.ServerLoginNetworkHandler.State;
-import net.minecraft.text.Text;
-import net.minecraft.util.dynamic.DynamicSerializableUuid;
 
 @SuppressWarnings("deprecation")
 @Mixin(value = ServerLoginNetworkHandler.class, priority = 999)
@@ -274,7 +270,14 @@ public class MixinServerLoginNetworkHandler implements IMixinServerLoginNetworkH
 
     @Inject(at = @At("TAIL"), method="onHello")
     public void spigotHello(LoginHelloC2SPacket packetlogininstart, CallbackInfo ci) {
-        if (!(this.server.isOnlineMode() && !this.connection.isLocal())) {
+        // allows support for mods like FabricProxy that alter how the "if" statement in onHello works
+        // all we care about is that the state is now READY_TO_ACCEPT and not KEY, in which case we should fire events now
+        if (this.state == State.READY_TO_ACCEPT) {
+            // if FabricProxy is installed, we need to spoof the UUID to whatever the proxy tells us
+            if (FabricLoader.getInstance().isModLoaded("fabricproxy-lite")) {
+                ((IMixinClientConnection)connection).setSpoofedUUID(packetlogininstart.profileId().orElseThrow());
+            }
+
             // Paper start - Cache authenticator threads
             authenticatorPool.execute(new Runnable() {
                 @Override
