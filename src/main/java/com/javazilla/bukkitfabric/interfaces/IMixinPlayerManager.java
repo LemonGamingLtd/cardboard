@@ -37,6 +37,4 @@ public interface IMixinPlayerManager {
 
     void sendScoreboardBF(ServerScoreboard newboard, ServerPlayerEntity handle);
 
-    List<ServerPlayerEntity> getPlayers();
-
 }

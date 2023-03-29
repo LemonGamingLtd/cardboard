@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.concurrent.CopyOnWriteArrayList;
 import net.minecraft.server.BannedPlayerEntry;
 import net.minecraft.server.BannedPlayerList;
 import org.bukkit.Location;
@@ -270,10 +271,6 @@ public class MixinPlayerManager implements IMixinPlayerManager {
     @Override
     public void sendScoreboardBF(ServerScoreboard newboard, ServerPlayerEntity handle) {
         sendScoreboard(newboard, handle);
-    }
-
-    public List<ServerPlayerEntity> getPlayers() {
-    	return this.players;
     }
 
 }

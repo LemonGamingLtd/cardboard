@@ -46,6 +46,7 @@ import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import javax.imageio.ImageIO;
 
 import org.apache.commons.lang.Validate;
@@ -294,7 +295,6 @@ public class CraftServer implements Server {
     private final BukkitSchedulerImpl scheduler = new BukkitSchedulerImpl();
     private final ConsoleCommandSender consoleCommandSender = new CardboardConsoleCommandSender();
     private final Map<UUID, OfflinePlayer> offlinePlayers = new MapMaker().weakValues().makeMap();
-    public final List<PlayerImpl> playerView;
     private WarningState warningState = WarningState.DEFAULT;
     public final Map<String, World> worlds = new LinkedHashMap<String, World>();
     private final SimpleHelpMap helpMap = new SimpleHelpMap(this);
@@ -325,15 +325,6 @@ public class CraftServer implements Server {
         configuration.options().copyDefaults(true);
         configuration.setDefaults(YamlConfiguration.loadConfiguration(new InputStreamReader(getClass().getClassLoader().getResourceAsStream("configurations/bukkit.yml"), Charsets.UTF_8)));
         saveConfig();
-
-        List<ServerPlayerEntity> players = ((IMixinPlayerManager) server.getPlayerManager()).getPlayers();
-
-        this.playerView = Collections.unmodifiableList(Lists.transform(players, new Function<ServerPlayerEntity, PlayerImpl>() {
-            @Override
-            public PlayerImpl apply(ServerPlayerEntity player) {
-                return (PlayerImpl) ((IMixinServerEntityPlayer) player).getBukkitEntity();
-            }
-        }));
 
         loadIcon();
     }
@@ -1153,7 +1144,9 @@ public class CraftServer implements Server {
 
     @Override
     public Collection<? extends Player> getOnlinePlayers() {
-        return this.playerView;
+        return server.getPlayerManager().players.stream()
+                .map(player -> (PlayerImpl) ((IMixinServerEntityPlayer) player).getBukkitEntity())
+                .toList();
     }
 
     @Override
