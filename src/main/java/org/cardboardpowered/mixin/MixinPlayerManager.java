@@ -19,11 +19,14 @@
 package org.cardboardpowered.mixin;
 
 import java.net.SocketAddress;
+import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import net.minecraft.server.BannedPlayerEntry;
+import net.minecraft.server.BannedPlayerList;
 import org.bukkit.Location;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.util.CraftChatMessage;
@@ -75,6 +78,12 @@ public class MixinPlayerManager implements IMixinPlayerManager {
 
     @Shadow
     public List<ServerPlayerEntity> players;
+
+    @Shadow
+    private BannedPlayerList bannedProfiles;
+
+    @Shadow
+    private static SimpleDateFormat DATE_FORMATTER;
 
     @Shadow
     public void sendCommandTree(ServerPlayerEntity player) {}
@@ -222,9 +231,12 @@ public class MixinPlayerManager implements IMixinPlayerManager {
         Player player = (Player) ((IMixinServerEntityPlayer)entity).getBukkitEntity();
         PlayerLoginEvent event = new PlayerLoginEvent(player, hostname, ((java.net.InetSocketAddress) address).getAddress(), ((java.net.InetSocketAddress) nethand.connection.channel.remoteAddress()).getAddress());
 
-        if (((PlayerManager)(Object)this).getUserBanList().contains(profile) /*&& !((PlayerManager)(Object)this).getUserBanList().get(gameprofile).isInvalid()*/) {
-            chatmessage = Text.translatable("multiplayer.disconnect.banned.reason", new Object[]{"TODO REASON!"});
-            //chatmessage.append(new TranslatableTextContent("multiplayer.disconnect.banned.expiration", new Object[] {"TODO EXPIRE!"}));
+        if (this.bannedProfiles.contains(profile)) {
+            BannedPlayerEntry bannedPlayerEntry = this.bannedProfiles.get(profile);
+            chatmessage = Text.translatable("multiplayer.disconnect.banned.reason", bannedPlayerEntry.getReason());
+            if (bannedPlayerEntry.getExpiryDate() != null) {
+                chatmessage.append(Text.translatable("multiplayer.disconnect.banned.expiration", DATE_FORMATTER.format(bannedPlayerEntry.getExpiryDate())));
+            }
 
             event.disallow(PlayerLoginEvent.Result.KICK_BANNED, CraftChatMessage.fromComponent(chatmessage));
         } else if (!((PlayerManager)(Object)this).isWhitelisted(profile)) {
