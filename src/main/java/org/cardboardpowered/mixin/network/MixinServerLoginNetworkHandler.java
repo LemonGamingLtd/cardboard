@@ -117,7 +117,6 @@ public class MixinServerLoginNetworkHandler implements IMixinServerLoginNetworkH
         }
         final String s = id;
         // Paper start - Cache authenticator threads
-        System.out.println("1Authenticating " + this.profile.getName() + " with id " + s);
         authenticatorPool.execute(new Runnable() {
             public void run() {
                 GameProfile gameprofile = profile;
