@@ -52,29 +52,6 @@ public class Utils {
         }
     }
 
-    public static UUID getWorldUUID(File baseDir) {
-        File file1 = new File(baseDir, "uid.dat");
-        if (file1.exists()) {
-            DataInputStream dis = null;
-            try {
-                dis = new DataInputStream(new FileInputStream(file1));
-                return new UUID(dis.readLong(), dis.readLong());
-            } catch (IOException ex) {
-                BukkitFabricMod.LOGGER.warning("Failed to read " + file1 + ", generating new random UUID. " + ex.getMessage());
-            } finally { if (dis != null) try { dis.close(); } catch (IOException ex) {/*NOOP*/} }
-        }
-        UUID uuid = UUID.randomUUID();
-        DataOutputStream dos = null;
-        try {
-            dos = new DataOutputStream(new FileOutputStream(file1));
-            dos.writeLong(uuid.getMostSignificantBits());
-            dos.writeLong(uuid.getLeastSignificantBits());
-        } catch (IOException ex) {
-            BukkitFabricMod.LOGGER.warning("Failed to write " + file1 + ", " + ex.getMessage());
-        } finally { if (dos != null) try {dos.close();} catch (IOException ex) {/*NOOP*/} }
-        return uuid;
-    }
-
     @SuppressWarnings("unchecked")
     public static <T, U> MemoryModuleType<U> fromMemoryKey(MemoryKey<T> memoryKey) {
         return (MemoryModuleType<U>) Registry.MEMORY_MODULE_TYPE.get(CraftNamespacedKey.toMinecraft(memoryKey.getKey()));

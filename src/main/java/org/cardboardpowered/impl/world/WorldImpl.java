@@ -18,7 +18,12 @@
  */
 package org.cardboardpowered.impl.world;
 
+import com.javazilla.bukkitfabric.BukkitFabricMod;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,6 +39,7 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 
+import java.util.logging.Level;
 import org.apache.commons.lang.Validate;
 import org.bukkit.BlockChangeDelegate;
 import org.bukkit.Bukkit;
@@ -186,6 +192,7 @@ public class WorldImpl implements World {
 
     private ServerWorld nms;
     private String name;
+    private UUID uuid;
     private WorldBorder worldBorder;
     private final List<BlockPopulator> populators = new ArrayList<BlockPopulator>();
 
@@ -194,6 +201,7 @@ public class WorldImpl implements World {
     public WorldImpl(String name, ServerWorld world) {
         this.nms = world;
         this.name = name;
+        this.uuid = getWorldUUID(getWorldFolder());
     }
 
     public WorldImpl(ServerWorld world) {
@@ -936,12 +944,25 @@ public class WorldImpl implements World {
 
     @Override
     public UUID getUID() {
-        return Utils.getWorldUUID(getWorldFolder());
+        return uuid;
+    }
+
+    @Override
+    public int hashCode() {
+        return this.getUID().hashCode();
     }
 
     @Override
     public boolean equals(Object obj) {
-        return (obj == null || getClass() != obj.getClass()) ? false : this.getName().equals(((WorldImpl)obj).getName());
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+
+        final WorldImpl other = (WorldImpl) obj;
+        return this.getUID() == other.getUID();
     }
 
     @Override
@@ -2449,6 +2470,28 @@ public class WorldImpl implements World {
     public void setWaterUndergroundCreatureSpawnLimit(int i) {
         // TODO Auto-generated method stub
         
+    }
+
+    private static UUID getWorldUUID(File worldFolder) {
+        File uidFile = new File(worldFolder, "uid.dat");
+        if (uidFile.exists()) {
+            try (DataInputStream dis = new DataInputStream(new FileInputStream(uidFile))) {
+                return new UUID(dis.readLong(), dis.readLong());
+            } catch (IOException e) {
+                BukkitFabricMod.LOGGER.log(Level.WARNING, "Failed to read world uid.dat file " + uidFile
+                        + ", generating new random UUID.", e);
+            }
+        }
+
+        UUID uuid = UUID.randomUUID();
+        try (DataOutputStream dos = new DataOutputStream(new FileOutputStream(uidFile))) {
+            dos.writeLong(uuid.getMostSignificantBits());
+            dos.writeLong(uuid.getLeastSignificantBits());
+        } catch (IOException e) {
+            BukkitFabricMod.LOGGER.log(Level.WARNING, "Failed to write uid to file " + uidFile, e);
+        }
+
+        return uuid;
     }
 
 }
