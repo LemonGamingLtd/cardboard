@@ -72,7 +72,6 @@ public class MixinLegacyQueryHandler {
                         return;
                     BukkitFabricMod.LOGGER.config("Ping: (1.6) from " + inetsocketaddress.getAddress() + ":" + inetsocketaddress.getPort());
                     String s1 = String.format("\u00a71\u0000%d\u0000%s\u0000%s\u0000%d\u0000%d", 127, minecraftserver.getVersion(), event.getMotd(), event.getNumPlayers(), event.getMaxPlayers()); // CraftBukkit
-                    System.out.println("DEBUG: " + s1);
                     ByteBuf bytebuf1 = this.toBuffer(s1);
 
                     try {

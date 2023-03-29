@@ -57,7 +57,6 @@ public class MixinSimpleInventory implements IMixinInventory {
         
         InventoryHolder hold = (transaction.size() >= 1) ? transaction.get(0) : null;
         if (null == hold) {
-            System.out.println("NULL HOLD!");
             return this.bukkitOwner;
         }
         return hold;

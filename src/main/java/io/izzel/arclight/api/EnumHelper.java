@@ -101,8 +101,7 @@ public class EnumHelper {
             enumConstantDirectoryOffset = Unsafe.objectFieldOffset(enumConstantDirectory);
             enumConstantsOffset = Unsafe.objectFieldOffset(enumConstants);
         } catch (NoSuchFieldException e) {
-            System.out.println("Cardboard currently does not work with Eclipse OpenJ9");
-            throw new IllegalStateException(e);
+            throw new IllegalStateException("Cardboard currently does not work with Eclipse OpenJ9", e);
         }
     }
 }

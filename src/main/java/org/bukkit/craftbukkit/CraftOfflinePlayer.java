@@ -45,7 +45,6 @@ public class CraftOfflinePlayer implements OfflinePlayer, ConfigurationSerializa
 
     @Override
     public boolean isOnline() {
-        System.out.println("isOnline: " + profile.toString() + ", " + (getPlayer() != null));
         return getPlayer() != null;
     }
 

@@ -129,7 +129,6 @@ public class Ref {
     }
 
     public static void setStaticFinalFieldValue(@Nonnull Class<?> clazz, @Nonnull String name, @Nullable Object value) {
-        System.out.println("Debug: Name: " + clazz.getName());
         if (clazz == LilyPadBlock.class) {
             if (name.equals("a")) {
                 name = "SHAPE"; // field_11728 
@@ -190,7 +189,6 @@ public class Ref {
         public void set(Field field, Object value) {
             try {
                 if ((value != null) && !field.getType().isInstance(value)) {
-                    System.out.println( "Can't set field type " + field.getType().getName() + " to " + value.getClass().getName() );
                     throw new IllegalArgumentException("Can't set field type " + field.getType().getName() + " to " + value.getClass().getName());
                    // return;
                 }

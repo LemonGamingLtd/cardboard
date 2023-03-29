@@ -619,7 +619,6 @@ public abstract class MixinServerPlayNetworkHandler implements IMixinPlayNetwork
             this.player.inventory.selectedSlot = packetplayinhelditemslot.getSelectedSlot();
             this.player.updateLastActionTime();
         } else {
-            System.out.println(this.player.getName().getString() + " tried to set an invalid carried item");
             this.disconnect(Text.of("Invalid hotbar selection (Hacking?)")); // CraftBukkit
         }
     }

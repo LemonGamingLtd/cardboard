@@ -69,10 +69,6 @@ public final class CraftItemStack extends ItemStack {
 
         // TODO 1.17ify
         Material mat = CraftMagicNumbers.getMaterial(original.getItem());
-        if (null == mat) {
-            System.out.println("Unknown Bukkit Material (possible 1.17 material?): " + Registry.ITEM.getId(original.getItem()).getPath().toUpperCase());
-        }
-
         ItemStack stack = new ItemStack(mat);
         if (hasItemMeta(original))
             stack.setItemMeta(getItemMeta(original));

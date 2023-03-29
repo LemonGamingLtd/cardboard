@@ -1220,8 +1220,6 @@ public class PlayerImpl extends CraftHumanEntity implements Player {
 
         if (getHandle().inventory != getHandle().inventory)
             getHandle().closeHandledScreen();
-        
-        System.out.println("Hello! " + from.getWorld() + " / " + to.getWorld());
 
         if (from.getWorld().equals(to.getWorld()))
              ((IMixinPlayNetworkHandler)(Object)entity.networkHandler).teleport(to);
@@ -1255,7 +1253,6 @@ public class PlayerImpl extends CraftHumanEntity implements Player {
 
     public InetSocketAddress getRawAddress_BF() {
         if (Bukkit.getPluginManager().isPluginEnabled("ProtocolSupport")) {
-            System.out.println("PS getRawAddress");
             try {
                 Class<?> ps = ReflectionRemapper.getClassFromJPL("protocolsupport.zplatform.impl.fabric.FabricMiscUtils");
                 HashMap<InetSocketAddress, InetSocketAddress> map = (HashMap<InetSocketAddress, InetSocketAddress>) ps.getField("rawAddressMap").get(null);

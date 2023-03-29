@@ -60,7 +60,6 @@ public class Commodore {
 
         Map<String, String> getAndRemove = new HashMap<>();
         // Be wary of maven shade's relocations
-        System.out.println(m("net.minecraft.class_2535"));
         getAndRemove.put( "org/bukkit/".concat( "craftbukkit/libs/it/unimi/dsi/fastutil/" ), "org/bukkit/".concat( "craftbukkit/libs/" ) ); // Remap fastutil to our location
         getAndRemove.put("net/minecraft/network/NetworkManager", m("net.minecraft.class_2535"));
 
@@ -87,10 +86,6 @@ public class Commodore {
 
     public static String getOriginalOrRewrite(String original) {
         String rewrite = null;
-        
-        if (original.contains("WOOL_CARPETS")) {
-        	System.out.println("Commodore: " + original);
-        }
         
         for ( Map.Entry<String, String> entry : SEARCH_AND_REMOVE.entrySet() ) {
             if ( original.contains( entry.getKey() ) ) {

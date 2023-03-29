@@ -41,7 +41,6 @@ public class MixinBlockEntity implements IMixinBlockEntity {
         }
         org.bukkit.block.BlockState state = block.getState(useSnapshot); // Paper: useSnapshot
         if (state instanceof InventoryHolder) return (InventoryHolder) state;
-        System.out.println("STATE NOT INSTANCEOF INVENTORYHOLDER!!");
         return null;
     }
 

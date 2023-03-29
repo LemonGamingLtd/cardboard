@@ -144,7 +144,6 @@ public class ReflectionRemapper {
                         return a;
                     }
                     if (null == whyIsAsmBroken) {
-                        System.out.println("CALLING: " + calling.getName() + ", F: " + f);
                         return null;
                     }
                     Field a = whyIsAsmBroken.getDeclaredField(MappingsReader.getIntermedField(whyIsAsmBroken.getName(), f));
@@ -277,7 +276,6 @@ public class ReflectionRemapper {
     public static JavaPluginLoader getFirstJPL() {
         try {
             SimplePluginManager pm = (SimplePluginManager) Bukkit.getPluginManager();
-            if (null == pm) System.out.println(" NULL PM ");
             Field fa = SimplePluginManager.class.getDeclaredField("fileAssociations");
             fa.setAccessible(true);
             Map<Pattern, PluginLoader> pl = (Map<Pattern, PluginLoader>) fa.get(pm);

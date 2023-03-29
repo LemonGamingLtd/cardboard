@@ -316,7 +316,6 @@ public abstract class MixinMinecraftServer extends ReentrantThreadExecutor<Serve
 
     @Override
     public void cardboard_runOnMainThread(Runnable r) {
-        System.out.print("runOnMainThread");
         processQueue.add(r);
     }
 

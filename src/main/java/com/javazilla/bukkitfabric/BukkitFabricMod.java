@@ -211,12 +211,9 @@ public class BukkitFabricMod implements ModInitializer {
 
     @EventHandler
     public void on_world_init__(ServerWorldInitEvent ev) {
-        System.out.println("on_world_init");
-
         FabricWorld fw = (FabricWorld) ev.getWorld();
 
         if (!(fw.mc instanceof ServerWorld)) {
-            System.out.println("CLIENT WORLD!");
             return;
         }
 

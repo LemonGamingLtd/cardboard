@@ -73,7 +73,6 @@ public class ReflectionMethodVisitor extends MethodVisitor {
                         spigot2obf.put(spl[1], spl[0]);
                      //   System.out.println("MAP: " + spl[1] + " | " + spl[0]);
                     }
-                    System.out.println("Loaded 1.17 Obf Class Map: " + spigot2obf.size());
                     for (String s : Files.readAllLines(new File("bd-m.txt").toPath())) {
                         if (s.indexOf('#') != -1) continue;
         
@@ -84,7 +83,6 @@ public class ReflectionMethodVisitor extends MethodVisitor {
                         if (s.indexOf('!') != -1) continue;
 
                         String[] spl = s.split("=");
-                        System.out.println("SPLIT: " + spl[0] + "," + spl[1]);
                         cbm.put(spl[0].trim(), spl[1].trim());
                     }
                 }
@@ -204,7 +202,6 @@ public class ReflectionMethodVisitor extends MethodVisitor {
 
         if (owner.equalsIgnoreCase("org/bukkit/Material")) {
             if (name.equalsIgnoreCase("getField")) {
-                System.out.println("\nGET MATERIAL FIELD!!!!!\n");
                 super.visitFieldInsn( opcode, "com/javazilla/bukkitfabric/nms/ReflectionMethodVisitor", "Material_getField", desc );
                 return;
             }

@@ -15,7 +15,6 @@ public class FieldWriter<T> {
     }
 
     public static <T> FieldWriter<T> of(@Nonnull Class<?> holder, @Nonnull String name, @Nonnull Class<T> fieldType) {
-        System.out.println("Debug: Name1: " + holder.getName());
         Field field = null;
         if (holder == HorizontalConnectingBlock.class) {
             if (name.equals("g")) {

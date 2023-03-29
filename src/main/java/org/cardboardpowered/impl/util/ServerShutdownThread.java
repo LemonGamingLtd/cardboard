@@ -4,7 +4,7 @@ public class ServerShutdownThread extends Thread {
 
     @Override
     public void run() {
-        System.out.println("Server Closed! ");
+        System.out.println("Server Closed!");
     }
 
 }

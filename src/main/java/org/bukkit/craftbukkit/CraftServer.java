@@ -753,7 +753,6 @@ public class CraftServer implements Server {
     @SuppressWarnings("resource")
     @Override
     public World createWorld(WorldCreator creator) {
-        System.out.println("Bukkit#createWorld 0");
         String name = creator.name();
         ChunkGenerator generator = creator.generator();
         File folder = new File(getWorldContainer(), name);

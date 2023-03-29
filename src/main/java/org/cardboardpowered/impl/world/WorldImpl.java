@@ -695,19 +695,16 @@ public class WorldImpl implements World {
 
     @Override
     public Block getHighestBlockAt(Location arg0) {
-        System.out.println("GET HIGH Y!");
         return getHighestBlockAt(arg0.getBlockX(), arg0.getBlockY());
     }
 
     @Override
     public Block getHighestBlockAt(int x, int z) {
-        System.out.println("GET HIGH Y!");
         return getBlockAt(x, getHighestBlockYAt(x, z), z);
     }
 
     @Override
     public Block getHighestBlockAt(Location arg0, HeightMap arg1) {
-        System.out.println("GET HIGH Y!");
         return getHighestBlockAt(arg0.getBlockX(), arg0.getBlockY());
     }
 
@@ -729,14 +726,12 @@ public class WorldImpl implements World {
     @Override
     public int getHighestBlockYAt(Location arg0, HeightMap arg1) {
         // TODO Auto-generated method stub
-        System.out.println("GET HIGH Y!");
         return 0;
     }
 
     @Override
     public int getHighestBlockYAt(int x, int z, HeightMap heightMap) {
         // TODO Auto-generated method stub
-        System.out.println("GET HIGH Y!");
        // return getHandle().getChunk(x >> 4, z >> 4).sampleHeightmap(CardboardHeightMap.toNMS(heightMap), x, z);
         return 0;
     }
