@@ -18,7 +18,6 @@ import org.bukkit.craftbukkit.block.CraftBlock;
 import org.bukkit.craftbukkit.persistence.CraftPersistentDataContainer;
 import org.bukkit.craftbukkit.persistence.CraftPersistentDataTypeRegistry;
 import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Pose;
 import org.bukkit.event.entity.EntityDamageEvent;
@@ -40,18 +39,15 @@ import org.jetbrains.annotations.Nullable;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import com.javazilla.bukkitfabric.BukkitFabricMod;
 import com.javazilla.bukkitfabric.interfaces.IMixinCommandOutput;
 import com.javazilla.bukkitfabric.interfaces.IMixinEntity;
 import com.javazilla.bukkitfabric.interfaces.IMixinWorld;
 import org.cardboardpowered.interfaces.IWorldChunk;
 import com.mojang.brigadier.LiteralMessage;
 
-import me.isaiah.common.entity.IEntity;
 import me.isaiah.common.entity.IRemoveReason;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
-import net.minecraft.entity.Entity.RemovalReason;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.command.ServerCommandSource;
@@ -275,8 +271,8 @@ public abstract class CraftEntity implements Entity, CommandSender, IMixinComman
 
     @Override
     public List<org.bukkit.entity.Entity> getNearbyEntities(double x, double y, double z) {
-        List<net.minecraft.entity.Entity> notchEntityList = nms.world.getOtherEntities(nms, nms.getBoundingBox().expand(x, y, z), null);
-        List<org.bukkit.entity.Entity> bukkitEntityList = new java.util.ArrayList<org.bukkit.entity.Entity>(notchEntityList.size());
+        List<net.minecraft.entity.Entity> notchEntityList = nms.world.getOtherEntities(nms, nms.getBoundingBox().expand(x, y, z), entity -> true);
+        List<org.bukkit.entity.Entity> bukkitEntityList = new java.util.ArrayList<>(notchEntityList.size());
 
         for (net.minecraft.entity.Entity e : notchEntityList)
             bukkitEntityList.add(((IMixinEntity)e).getBukkitEntity());
