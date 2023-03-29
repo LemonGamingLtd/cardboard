@@ -28,6 +28,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -137,6 +138,8 @@ public class PlayerImpl extends CraftHumanEntity implements Player {
 
     private final Set<String> channels = new HashSet<String>();
     public ServerPlayerEntity nms;
+
+    private int hash = 0;
 
     public PlayerImpl(ServerPlayerEntity entity) {
         super(entity);
@@ -1234,15 +1237,19 @@ public class PlayerImpl extends CraftHumanEntity implements Player {
     }
 
     @Override
+    public int hashCode() {
+        if (this.hash == 0 || this.hash == 485) {
+            this.hash = 97 * 5 + (this.getUniqueId() != null ? this.getUniqueId().hashCode() : 0);
+        }
+        return this.hash;
+    }
+
+    @Override
     public boolean equals(Object obj) {
-        if (!(obj instanceof OfflinePlayer))
+        if (!(obj instanceof OfflinePlayer other))
             return false;
 
-        OfflinePlayer other = (OfflinePlayer) obj;
-        if ((this.getUniqueId() == null) || (other.getUniqueId() == null))
-            return false;
-
-        boolean uuidEquals = this.getUniqueId().equals(other.getUniqueId());
+        boolean uuidEquals = Objects.equals(this.getUniqueId(), other.getUniqueId());
         boolean idEquals = true;
 
         if (other instanceof PlayerImpl)

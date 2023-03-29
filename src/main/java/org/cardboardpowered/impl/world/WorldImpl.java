@@ -962,7 +962,7 @@ public class WorldImpl implements World {
         }
 
         final WorldImpl other = (WorldImpl) obj;
-        return this.getUID() == other.getUID();
+        return Objects.equals(this.getUID(), other.getUID());
     }
 
     @Override
