@@ -184,6 +184,7 @@
     "block.MixinPistonBlock",
     "block.MixinShearsDispenserBehavior",
     "block.MixinLeavesBlock",
+    "block.MixinShapeContext",
 
     "MixinFrostWalkerEnchantment"
   ],
