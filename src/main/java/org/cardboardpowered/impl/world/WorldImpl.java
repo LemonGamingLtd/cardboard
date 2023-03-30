@@ -835,16 +835,13 @@ public class WorldImpl implements World {
     }
 
     @Override
-    public int getHighestBlockYAt(Location arg0, HeightMap arg1) {
-        // TODO Auto-generated method stub
-        return 0;
+    public int getHighestBlockYAt(Location location, @NotNull HeightMap heightMap) {
+        return this.getHighestBlockYAt(location.getBlockX(), location.getBlockZ(), heightMap);
     }
 
     @Override
-    public int getHighestBlockYAt(int x, int z, HeightMap heightMap) {
-        // TODO Auto-generated method stub
-       // return getHandle().getChunk(x >> 4, z >> 4).sampleHeightmap(CardboardHeightMap.toNMS(heightMap), x, z);
-        return 0;
+    public int getHighestBlockYAt(int x, int z, @NotNull HeightMap heightMap) {
+        return getHandle().getChunk(x >> 4, z >> 4).sampleHeightmap(CardboardHeightMap.toNMS(heightMap), x, z);
     }
 
     @Override
